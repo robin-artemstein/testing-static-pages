@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Babylon.js Demo: Cube and Sphere with Rotation and Zoom</title>
+    <!-- 引入Babylon.js庫，從CDN載入，確保是最新的穩定版本 -->
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <style>
+        html, body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none; /* 防止瀏覽器默認觸控行為干擾 */
+        }
+    </style>
+</head>
+<body>
+    <!-- Canvas元素，用於渲染Babylon.js場景 -->
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        // 獲取Canvas元素
+        const canvas = document.getElementById("renderCanvas");
+
+        // 創建Babylon.js引擎，啟用WebGL渲染
+        const engine = new BABYLON.Engine(canvas, true); // true表示啟用抗鋸齒
+
+        // 定義創建場景的函數
+        function createScene() {
+            // 創建一個新的場景
+            const scene = new BABYLON.Scene(engine);
+
+            // 創建ArcRotateCamera，這是支持旋轉和縮放的相機類型
+            // 參數：名稱、alpha（初始水平角度）、beta（初始垂直角度）、radius（初始距離）、目標位置、場景
+            const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2.5, 10, BABYLON.Vector3.Zero(), scene);
+
+            // 將相機附加到Canvas，啟用滑鼠和觸控控制
+            // 這將自動處理滑鼠拖曳旋轉、滾輪縮放、觸控拖曳旋轉和捏合縮放
+            camera.attachControl(canvas, true);
+
+            // 添加半球燈光，模擬自然光線
+            // 參數：名稱、方向、場景
+            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+
+            // 需求1: 添加一個方型（立方體）3D模型
+            // 使用MeshBuilder創建Box，這是Babylon.js內建的基本形狀，不需外部檔案
+            // 假設"從外部根目錄添加"意指在程式中直接創建並添加到場景
+            const cube = BABYLON.MeshBuilder.CreateBox("cube", { size: 2 }, scene);
+            // 設定立方體位置，略微向左移動以便與球體區分
+            cube.position = new BABYLON.Vector3(-2, 0, 0);
+            // 添加材質以增加視覺效果（可選，但提升可見度）
+            const cubeMaterial = new BABYLON.StandardMaterial("cubeMaterial", scene);
+            cubeMaterial.diffuseColor = new BABYLON.Color3(0.5, 0.5, 1); // 藍色
+            cube.material = cubeMaterial;
+
+            // 需求1: 添加一個球型（球體）3D模型
+            // 使用MeshBuilder創建Sphere，這是Babylon.js內建的基本形狀
+            const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 2 }, scene);
+            // 設定球體位置，略微向右移動
+            sphere.position = new BABYLON.Vector3(2, 0, 0);
+            // 添加材質
+            const sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
+            sphereMaterial.diffuseColor = new BABYLON.Color3(1, 0.5, 0.5); // 紅色
+            sphere.material = sphereMaterial;
+
+            // 添加地面以提供參考（可選，但幫助理解3D空間）
+            const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 10, height: 10 }, scene);
+            const groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
+            groundMaterial.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.8); // 灰色
+            ground.material = groundMaterial;
+
+            // 返回場景
+            return scene;
+        }
+
+        // 創建場景
+        const scene = createScene();
+
+        // 啟動渲染循環
+        engine.runRenderLoop(function () {
+            scene.render(); // 每幀渲染場景
+        });
+
+        // 處理視窗大小變化，調整引擎大小
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+</body>
+</html>
