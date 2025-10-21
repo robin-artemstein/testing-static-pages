@@ -1,15 +1,17 @@
 class Playground {
-    public static CreateScene(engine: BABYLON.Engine, canvas: HTMLCanvasElement): BABYLON.Scene {
-        var scene = new BABYLON.Scene(engine);
-        var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 5, new BABYLON.Vector3(0, 0, 0), scene);
-        BABYLON.ImportMeshAsync(
-            "https://raw.githubusercontent.com/robin-artemstein/testing-static-pages/main/Katana3.glb",
-            scene).then(function () {
-                scene.createDefaultCameraOrLight(true, true, true);
-                scene.createDefaultEnvironment();
-        });
+    public static async CreateScene(engine: BABYLON.Engine): Promise<BABYLON.Scene> {
+        const scene = new BABYLON.Scene(engine);
+
+        // Create a default skybox with an environment.
+        const hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("textures/environment.dds", scene);
+        const currentSkybox = scene.createDefaultSkybox(hdrTexture, true);
+
+        await BABYLON.AppendSceneAsync("https://raw.githubusercontent.com/robin-artemstein/testing-static-pages/main/Katana14.glb", scene);
+
+        scene.createDefaultCameraOrLight(true, true, true);
+        const camera = scene.activeCamera as BABYLON.ArcRotateCamera;
 
         return scene;
     }
 }
-export { Playground };
+export default Playground
