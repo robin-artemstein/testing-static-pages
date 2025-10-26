@@ -6,7 +6,7 @@ class Playground {
         scene.ambientColor = new BABYLON.Color3(0.4, 0.4, 0.4)
 
         // This creates and positions a free camera (non-mesh)
-        var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 1.5,  Math.PI / 1.5, 0, BABYLON.Vector3.Zero(), scene);
+        var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2,  Math.PI / 2, 1.5, BABYLON.Vector3.Zero(), scene);
         // This attaches camera to the canvas
         camera.attachControl(canvas, true);
         //This limit camera zooming
