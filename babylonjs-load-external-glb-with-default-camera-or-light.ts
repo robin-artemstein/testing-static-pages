@@ -8,6 +8,7 @@ class Playground {
         "https://raw.githubusercontent.com/robin-artemstein/testing-static-pages/main/Katana3.glb",
         scene).then(function () {          
             scene.createDefaultCameraOrLight(true, true, true);
+            //scene.environmentTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("/textures/environment.dds", scene);
             scene.createDefaultEnvironment();
     });
 
