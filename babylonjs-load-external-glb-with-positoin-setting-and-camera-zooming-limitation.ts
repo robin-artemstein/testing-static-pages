@@ -24,7 +24,7 @@ class Playground {
         scene.createDefaultEnvironment();
         const camera = scene.activeCamera as BABYLON.ArcRotateCamera;
         camera.alpha = -Math.PI / 2;
-        camera.beta =  Math.PI / 2;;
+        camera.beta =  Math.PI / 2;
         camera.radius = 1.5;
         camera.lowerRadiusLimit = 0.25;
         camera.upperRadiusLimit = 10;
