@@ -8,11 +8,11 @@ class Playground {
                 // Retrieve the loaded model (assuming the model is the first root node)
                 const model = result.meshes[0];
 
-                // Setting coordinate position for the loaded model, for instance, move it to (x: -0.25, y: -01, z: 0)
+                // Setting coordinate position for loaded model, for instance, move it to (x: -0.25, y: -01, z: 0)
                 model.position = new BABYLON.Vector3(-0.25, -0.1, 0);
 
-                // Optional: Setting scaling for the loaded model (if the model is too small or too large)
-                model.scaling = new BABYLON.Vector3(1, 1, 1); // 按需求調整縮放比例
+                // Optional: Setting scaling ratio for the loaded model (if the model is too small or too large)
+                model.scaling = new BABYLON.Vector3(1, 1, 1); // Setting the scaling ratio
 
                 // Optional: Setting rotation for the loaded model (in radians)
                 model.rotation = new BABYLON.Vector3(0, Math.PI / 1, 0); // Rotate 90 degrees along the Y-axis.
