@@ -25,20 +25,20 @@ var createScene = function () {
     // GUI
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
-    var rect2 = BABYLON.GUI.Button.CreateSimpleButton("button2", "Change camera position");
-    rect2.width = 0.25; // 0.2 = 20%
-    rect2.height = "40px";
-    rect2.cornerRadius = 20;
-    rect2.color = "white";
-    rect2.thickness = 4;
-    rect2.background = "blue";
+    var btn1 = BABYLON.GUI.Button.CreateSimpleButton("button2", "Change camera position");
+    btn1.width = 0.25; // 0.2 = 20%
+    btn1.height = "40px";
+    btn1.cornerRadius = 20;
+    btn1.color = "white";
+    btn1.thickness = 4;
+    btn1.background = "blue";
 
-    rect2.top = 200; //200 px
-    rect2.left = "10%";
-    rect2.onPointerClickObservable.add(() => {
+    btn1.top = 200; //200 px
+    btn1.left = "10%";
+    btn1.onPointerClickObservable.add(() => {
         camera.radius = 0.5;
     });
-    advancedTexture.addControl(rect2);
+    advancedTexture.addControl(btn1);
  
  
     return scene;
