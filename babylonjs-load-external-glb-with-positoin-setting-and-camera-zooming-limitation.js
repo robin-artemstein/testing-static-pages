@@ -17,7 +17,7 @@ export const createScene = function () {
         camera.wheelPrecision = 500;
     } else {
     console.error("The activeCamera does not support ArcRotateCamera...");
-}
+    }
 
     return scene;
 };
