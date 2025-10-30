@@ -49,7 +49,7 @@ class Playground {
         // Update the text block when slider value changes
         slider.onValueChangedObservable.add(function (value) {
             let textNumber = Math.round(value)
-            console.log(textNumber + "  " + typeof textNumber);
+            console.log(textNumber + " is " + typeof textNumber);
             textBlock.text = textNumber.toString(); // Round to nearest integer for display
         });
 
