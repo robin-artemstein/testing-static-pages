@@ -48,8 +48,9 @@ class Playground {
 
         // Update the text block when slider value changes
         slider.onValueChangedObservable.add(function (value) {
-            textBlock.text = Math.round(value).toString(); // Round to nearest integer for display
-            console.log(textBlock.text);
+            let textNumber = Math.round(value)
+            console.log(textNumber + "  " + typeof textNumber);
+            textBlock.text = textNumber.toString(); // Round to nearest integer for display
         });
 
         return scene;
