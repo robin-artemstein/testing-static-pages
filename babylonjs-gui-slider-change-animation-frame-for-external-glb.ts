@@ -30,14 +30,9 @@ class Playground {
             // Save the reference of the animation group
             katanaAnimationGroup = animationGroups[0];
             console.log("模型和動畫已成功載入:", katanaAnimationGroup.name);
-        
-            // The animation stop at the 1st frame by default
-            // Stop all animations
-            katanaAnimationGroup.stop(); 
 
             // Set the current frame number to 1 (Babylon.js uses a 0-based frame index, so the first frame is actually index 0).
             // Use the setCurrentFrame() method to move the model to a specific pose.
-            katanaAnimationGroup.play(false); // Play once to initialize the animation track
             katanaAnimationGroup.pause(); // Pause immediately
             katanaAnimationGroup.goToFrame(1); // Jump to frame 1 (index 1)
 
@@ -47,32 +42,47 @@ class Playground {
         // Create an Advanced Dynamic Texture (ADT) to draw a 2D GUI over the scene.
         const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
-        // Create a button control options
-        const button = BABYLON.GUI.Button.CreateSimpleButton("moveButton", "Move to Frame 55");
-        button.width = "150px";
-        button.height = "40px";
-        button.color = "white";
-        button.background = "blue";
-        button.alpha = 0.8;
-        // Align the button vertically to the bottom.
-        button.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-        button.paddingBottom = "20px";
+        // Create a stack panel to hold the controls vertically
+        const stackPanel = new BABYLON.GUI.StackPanel();
+        stackPanel.width = "200px";
+        stackPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        stackPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        advancedTexture.addControl(stackPanel);
 
-        // Add a click event handler to the button
-        button.onPointerUpObservable.add(function () {
+        // Create the text block (displaying the number)
+        const textBlock = new BABYLON.GUI.TextBlock();
+        textBlock.text = "0";
+        textBlock.color = "white";
+        textBlock.fontSize = 24;
+        textBlock.height = "50px";
+        stackPanel.addControl(textBlock);
+
+        // Create the horizontal slider
+        const slider = new BABYLON.GUI.Slider();
+        slider.minimum = 0;
+        slider.maximum = 100;
+        slider.value = 0;
+        slider.height = "20px";
+        slider.width = "200px";
+        slider.isVertical = false; // Ensure horizontal
+        slider.isPointerBlocker = true; // Ensure the slider captures pointer (mouse/touch) events
+        stackPanel.addControl(slider);
+
+        // Update the text block when slider value changes
+        slider.onValueChangedObservable.add(function (value) {
+            let textNumber = Math.round(value)
+            console.log(textNumber + " is " + typeof textNumber);
+            textBlock.text = textNumber.toString(); // Round to nearest integer for display
             if (katanaAnimationGroup) {
                 console.log("When the button is clicked, the animation moves to frame 55.");
 
                 // Stop any playing animation.
-                katanaAnimationGroup.goToFrame(55); 
-                katanaAnimationGroup.stop();
+                katanaAnimationGroup.goToFrame(textNumber); 
+                katanaAnimationGroup.pause();
             } else {
                 console.log("The model has not been loaded, so animation operations cannot be performed.");
             }
         });
-
-        // Add the button to the ADT so that it appears on the screen.
-        advancedTexture.addControl(button);
 
         // Returning the scene object is the standard practice required by Playground.
         return scene;
