@@ -44,7 +44,9 @@ class Playground {
 
         // Create a stack panel to hold the controls vertically
         const stackPanel = new BABYLON.GUI.StackPanel();
-        stackPanel.width = "200px";
+        stackPanel.width = "700px";
+        stackPanel.left = "-10%"
+        stackPanel.top = "37%";
         stackPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         stackPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
         advancedTexture.addControl(stackPanel);
@@ -59,11 +61,12 @@ class Playground {
 
         // Create the horizontal slider
         const slider = new BABYLON.GUI.Slider();
+        slider.thumbColor = "blue";
         slider.minimum = 0;
-        slider.maximum = 100;
+        slider.maximum = 230;
         slider.value = 0;
         slider.height = "20px";
-        slider.width = "200px";
+        slider.width = "700px";
         slider.isVertical = false; // Ensure horizontal
         slider.isPointerBlocker = true; // Ensure the slider captures pointer (mouse/touch) events
         stackPanel.addControl(slider);
