@@ -68,7 +68,7 @@ class Playground {
         slider.isPointerBlocker = true; // Ensure the slider captures pointer (mouse/touch) events
         stackPanel.addControl(slider);
 
-        // Update the text block when slider value changes
+        // Update the text block number and make the animation pause at specific frame when slider value changes
         slider.onValueChangedObservable.add(function (value) {
             let textNumber = Math.round(value)
             console.log(textNumber + " is " + typeof textNumber);
@@ -76,7 +76,7 @@ class Playground {
             if (katanaAnimationGroup) {
                 console.log("When the button is clicked, the animation moves to frame 55.");
 
-                // Stop any playing animation.
+                // Go to and pause at the specific frame.
                 katanaAnimationGroup.goToFrame(textNumber); 
                 katanaAnimationGroup.pause();
             } else {
