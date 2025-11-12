@@ -22,7 +22,7 @@ class Playground {
 
         // Create a stack panel to hold the controls vertically
         const stackPanel = new BABYLON.GUI.StackPanel();
-        stackPanel.width = "700px";
+        stackPanel.width = "95%";
         stackPanel.left = "3%";
         stackPanel.top = "37%"
         stackPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -45,7 +45,7 @@ class Playground {
         sliderInteger.maximum = 100;
         sliderInteger.value = 0;
         sliderInteger.height = "20px";
-        sliderInteger.width = "700px";
+        sliderInteger.width = "95%";
         sliderInteger.isVertical = false; // Ensure horizontal
         sliderInteger.isPointerBlocker = true; // Ensure the slider captures pointer (mouse/touch) events
         stackPanel.addControl(sliderInteger);
@@ -73,7 +73,7 @@ class Playground {
         sliderDecimal.maximum = 1;
         sliderDecimal.value = 0;
         sliderDecimal.height = "20px";
-        sliderDecimal.width = "700px";
+        sliderDecimal.width = "95%";
         sliderDecimal.isVertical = false; // Ensure horizontal
         sliderDecimal.isPointerBlocker = true; // Ensure the slider captures pointer (mouse/touch) events
         stackPanel.addControl(sliderDecimal);
