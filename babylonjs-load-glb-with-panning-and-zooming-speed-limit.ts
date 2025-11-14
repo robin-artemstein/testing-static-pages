@@ -25,15 +25,19 @@ class Playground {
         scene.createDefaultCameraOrLight(true, true, true);
         scene.createDefaultEnvironment();
         const camera = scene.activeCamera as BABYLON.ArcRotateCamera;
+        // Arc rotate camera setting
         camera.alpha = -Math.PI / 2;
         camera.beta =  Math.PI / 2;
         camera.radius = 1.5;
         camera.lowerRadiusLimit = 0.25;
         camera.upperRadiusLimit = 10;
+        // Limit zooming speed for touch devices
         camera.pinchPrecision = 0.005;
         camera.pinchDeltaPercentage = 0.005;
+        // Limit Zooming speed for mouse
         camera.wheelPrecision = 0.005;
         camera.wheelDeltaPercentage = 0.005;
+        // Limit panning speed for both of mouse and touch devices
         camera.panningSensibility = 5000; // Panning speed setting, smaller means faster panning
 
         return scene;
