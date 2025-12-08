@@ -1,75 +1,176 @@
 export const createScene = function () {
-    // This creates a basic Babylon Scene object (non-mesh)
-    // Get the engine and canvas elements provided by the playground environment
-    var engine = BABYLON.Engine.LastCreatedEngine;
-    var canvas = engine.getRenderingCanvas();
-    
-    // The rest of the logic goes inside this function
+    // Create a new scene object, which is like the world where everything happens.
     const scene = new BABYLON.Scene(engine);
 
-    // Camera and Light setup
-    const camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 0, 0), scene);
+    // Set up a camera that can rotate around the scene, positioned to look at the origin (0,0,0).
+    const camera = new BABYLON.ArcRotateCamera("camera", BABYLON.Tools.ToRadians(45), BABYLON.Tools.ToRadians(45), 10, BABYLON.Vector3.Zero(), scene);
+    // Attach the camera to the canvas so it responds to user inputs like mouse and touch.
     camera.attachControl(canvas, true);
-    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), scene);
 
-    // Create a sphere to click on to open the modal and make it pickable
-    const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 2 }, scene);
-    sphere.position.y = 1;
-    sphere.isPickable = true; // Ensure the mesh can be clicked
+    // Add a light to illuminate the scene, coming from above.
+    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
 
-    // --- GUI Modal Logic ---
-    // Note: You need to make sure the GUI extension is loaded in the playground.
-    // The playground usually loads the necessary extensions automatically if referenced.
-    const adt = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    // Create a simple cube mesh (3D object) in the scene.
+    const cube = BABYLON.MeshBuilder.CreateBox("cube", { size: 2 }, scene);
 
-    const modalContainer = new BABYLON.GUI.Rectangle();
-    modalContainer.width = "40%";
-    // We set initial visibility to false, so it starts hidden.
-    modalContainer.isVisible = false; 
-    // Set height to auto or fixed value, "100%" makes it take the whole screen which might be too big if you want padding.
-    modalContainer.height = "430px"; 
-    modalContainer.cornerRadius = 15;
-    modalContainer.color = "White";
-    modalContainer.thickness = 2;
-    modalContainer.background = "#333333";
-    adt.addControl(modalContainer);
+    // Create a GUI texture that covers the full screen for 2D elements like buttons and text.
+    const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true);
 
-    const stackPanel = new BABYLON.GUI.StackPanel();
-    modalContainer.addControl(stackPanel);
+    // Create the "Need help?" button in the lower right corner.
+    const helpButton = BABYLON.GUI.Button.CreateSimpleButton("helpButton", "Need help?");
+    helpButton.width = "130px"; // Set the width of the button.
+    helpButton.height = "50px"; // Set the height of the button.
+    helpButton.color = "white"; // Text color.
+    helpButton.background = "blue"; // Background color for visibility.
+    helpButton.cornerRadius = 30;
+    helpButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT; // Align to the right side.
+    helpButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Align to the bottom.
+    helpButton.paddingBottom = "20px"; // Add some space from the bottom edge.
+    helpButton.paddingRight = "20px"; // Add some space from the right edge.
+    advancedTexture.addControl(helpButton); // Add the button to the GUI.
 
-    const content = new BABYLON.GUI.TextBlock();
-    content.text = "Instruction... \n\n Rotate\nLeft click + Drag (Mouse)\nOne finger + drag (Touch) \n\n Zoom\nScrolling (Mouse)\nTwo fingers pinch (Touch) \n\n Pan\nRight click + Drag (Mouse)\nTwo fingers drag (Touch)";
-    content.color = "white";
-    content.fontSize = 23;
-    content.textWrapping = true;
-    content.width = 0.9;
-    content.height = "370px";
-    stackPanel.addControl(content);
+    // Create the modal rectangle that will appear in the center.
+    const modalRect = new BABYLON.GUI.Rectangle("modalRect");
+    modalRect.width = "72%"; // Width of the modal.
+    modalRect.height = "400px"; // Height of the modal.
+    modalRect.cornerRadius = 30; // Rounded corners.
+    modalRect.color = "white"; // Border color.
+    modalRect.thickness = 2; // Border thickness.
+    modalRect.background = "#333333"; // Dark gray background.
+    modalRect.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Center horizontally.
+    modalRect.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER; // Center vertically.
+    modalRect.isVisible = false; // Invisible by default.
+    advancedTexture.addControl(modalRect); // Add to the GUI.
 
+    // Use a vertical stack panel inside the modal to organize elements top to bottom.
+    const modalStack = new BABYLON.GUI.StackPanel();
+    modalStack.width = "100%"; // Full width of the modal.
+    modalStack.paddingTop = "20px"; // Some padding at the top.
+    modalRect.addControl(modalStack); // Add the stack to the modal.
+
+    // Create the headline text block.
+    const headLine = new BABYLON.GUI.TextBlock("headLine", "Instructions...");
+    headLine.height = "40px"; // Height for the text.
+    headLine.fontSize = 30; // Font size as specified.
+    headLine.color = "white"; // White text.
+    headLine.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Center the text.
+    modalStack.addControl(headLine); // Add to the stack.
+    
+    // Create a container for the instruction texts (we'll add them to the main stack).
+    // But since they overlap in position, we'll add them separately and control visibility.
+
+    // Create the rotation text block.
+    const rotationText = new BABYLON.GUI.TextBlock("rotationText", "Rotate\nLeft click + Drag (Mouse)\nOne finger drag (Touch)");
+    rotationText.height = "150px"; // Enough height for multi-line text.
+    rotationText.fontSize = 20;
+    rotationText.color = "white";
+    rotationText.textWrapping = true; // Allow wrapping if needed.
+    rotationText.paddingTop = "20px";
+    rotationText.paddingLeft = "20px";
+    rotationText.paddingRight = "20px";
+    rotationText.isVisible = true; // Visible by default.
+    modalStack.addControl(rotationText); // Add to stack.
+
+    // Create the zoom text block.
+    const zoomText = new BABYLON.GUI.TextBlock("zoomText", "Zoom\nScrolling (Mouse)\nTwo fingers pinch (Touch)");
+    zoomText.height = "150px";
+    zoomText.fontSize = 20;
+    zoomText.color = "white";
+    zoomText.textWrapping = true;
+    zoomText.paddingTop = "20px";
+    zoomText.paddingLeft = "20px";
+    zoomText.paddingRight = "20px";
+    zoomText.isVisible = false; // Invisible by default.
+    modalStack.addControl(zoomText); // Add to stack.
+
+    // Create the pan text block.
+    const panText = new BABYLON.GUI.TextBlock("panText", "Pan\nRight click + Drag (Mouse)\nTwo fingers drag (Touch)");
+    panText.height = "150px";
+    panText.fontSize = 20;
+    panText.color = "white";
+    panText.textWrapping = true;
+    panText.paddingTop = "20px";
+    panText.paddingLeft = "20px";
+    panText.paddingRight = "20px";
+    panText.isVisible = false; // Invisible by default.
+    modalStack.addControl(panText); // Add to stack.
+
+    // Note: Since stack panel stacks them vertically, but we want only one visible at a time,
+    // hiding will collapse the space, which is fine as heights are fixed.
+
+    // Create a horizontal stack panel for the Rotate, Zoom, Pan buttons.
+    const buttonStack = new BABYLON.GUI.StackPanel();
+    buttonStack.isVertical = false; // Horizontal layout.
+    buttonStack.height = "55px"; // Height for the buttons.
+    buttonStack.paddingTop = "20px"; // Space above.
+    modalStack.addControl(buttonStack); // Add to the main stack.
+
+    // Create the Rotate button.
+    const rotateButton = BABYLON.GUI.Button.CreateSimpleButton("rotateButton", "Rotate");
+    rotateButton.width = "70px";
+    rotateButton.height = "40px";
+    rotateButton.color = "white";
+    rotateButton.background = "gray";
+    buttonStack.addControl(rotateButton);
+
+    // Create the Zoom button.
+    const zoomButton = BABYLON.GUI.Button.CreateSimpleButton("zoomButton", "Zoom");
+    zoomButton.width = "70px";
+    zoomButton.height = "40px";
+    zoomButton.color = "white";
+    zoomButton.background = "gray";
+    buttonStack.addControl(zoomButton);
+
+    // Create the Pan button.
+    const panButton = BABYLON.GUI.Button.CreateSimpleButton("panButton", "Pan");
+    panButton.width = "70px";
+    panButton.height = "40px";
+    panButton.color = "white";
+    panButton.background = "gray";
+    buttonStack.addControl(panButton);
+
+    // Create the Close button at the bottom.
     const closeButton = BABYLON.GUI.Button.CreateSimpleButton("closeButton", "Close");
-    closeButton.width = "100px";
-    closeButton.height = "40px";
+    closeButton.width = "150px";
+    closeButton.height = "70px";
     closeButton.color = "white";
-    closeButton.background = "blue"; // Give the button some background
-    closeButton.cornerRadius = 5;
-    closeButton.paddingTop = "1px";
-    closeButton.paddingBottom = "5px"
-    // Use an arrow function for clean scope and readability in modern JS
-    closeButton.onPointerUpObservable.add(() => {
-        modalContainer.isVisible = false; // Hide modal when clicked
-    });
-    stackPanel.addControl(closeButton);
+    closeButton.background = "red"; // Red for close.
+    closeButton.cornerRadius = 30;
+    closeButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    closeButton.paddingTop = "25px"; // Space above.
+    modalStack.addControl(closeButton); // Add to the stack.
 
-    // Sphere Click Handler
-    scene.onPointerObservable.add((pointerInfo) => {
-        if (pointerInfo.type === BABYLON.PointerEventTypes.POINTERPICK) {
-            // Check if the picked mesh is our sphere
-            if (pointerInfo.pickInfo.hit && pointerInfo.pickInfo.pickedMesh === sphere) {
-                modalContainer.isVisible = true; // Show modal when sphere is clicked
-            }
-        }
+    // Event: When "Need help?" is clicked, show the modal.
+    helpButton.onPointerUpObservable.add(function() {
+        modalRect.isVisible = true; // Make modal visible.
     });
 
-    // Return the scene object, which the playground will then render
+    // Event: When Rotate button is clicked, show rotation text, hide others.
+    rotateButton.onPointerUpObservable.add(function() {
+        rotationText.isVisible = true;
+        zoomText.isVisible = false;
+        panText.isVisible = false;
+    });
+
+    // Event: When Zoom button is clicked, show zoom text, hide others.
+    zoomButton.onPointerUpObservable.add(function() {
+        rotationText.isVisible = false;
+        zoomText.isVisible = true;
+        panText.isVisible = false;
+    });
+
+    // Event: When Pan button is clicked, show pan text, hide others.
+    panButton.onPointerUpObservable.add(function() {
+        rotationText.isVisible = false;
+        zoomText.isVisible = false;
+        panText.isVisible = true;
+    });
+
+        // Event: When Close is clicked, hide the modal.
+    closeButton.onPointerUpObservable.add(function() {
+        modalRect.isVisible = false; // Hide the entire modal.
+    });
+
+    // Return the scene to be rendered.
     return scene;
 };
