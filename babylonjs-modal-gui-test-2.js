@@ -18,10 +18,11 @@ export const createScene = function () {
 
     // Create the "Need help?" button in the lower right corner.
     var helpButton = BABYLON.GUI.Button.CreateSimpleButton("helpButton", "Need help?");
-    helpButton.width = "150px"; // Set the width of the button.
+    helpButton.width = "130px"; // Set the width of the button.
     helpButton.height = "50px"; // Set the height of the button.
     helpButton.color = "white"; // Text color.
     helpButton.background = "blue"; // Background color for visibility.
+    helpButton.cornerRadius = 30;
     helpButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT; // Align to the right side.
     helpButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM; // Align to the bottom.
     helpButton.paddingBottom = "20px"; // Add some space from the bottom edge.
@@ -30,9 +31,9 @@ export const createScene = function () {
 
     // Create the modal rectangle that will appear in the center.
     var modalRect = new BABYLON.GUI.Rectangle("modalRect");
-    modalRect.width = "600px"; // Width of the modal.
+    modalRect.width = "72%"; // Width of the modal.
     modalRect.height = "400px"; // Height of the modal.
-    modalRect.cornerRadius = 20; // Rounded corners.
+    modalRect.cornerRadius = 30; // Rounded corners.
     modalRect.color = "white"; // Border color.
     modalRect.thickness = 2; // Border thickness.
     modalRect.background = "#333333"; // Dark gray background.
@@ -61,7 +62,7 @@ export const createScene = function () {
     // Create the rotation text block.
     var rotationText = new BABYLON.GUI.TextBlock("rotationText", "Rotate\nLeft click + Drag (Mouse)\nOne finger drag (Touch)");
     rotationText.height = "150px"; // Enough height for multi-line text.
-    rotationText.fontSize = 25;
+    rotationText.fontSize = 20;
     rotationText.color = "white";
     rotationText.textWrapping = true; // Allow wrapping if needed.
     rotationText.paddingTop = "20px";
@@ -73,7 +74,7 @@ export const createScene = function () {
     // Create the zoom text block.
     var zoomText = new BABYLON.GUI.TextBlock("zoomText", "Zoom\nScrolling (Mouse)\nTwo fingers pinch (Touch)");
     zoomText.height = "150px";
-    zoomText.fontSize = 25;
+    zoomText.fontSize = 20;
     zoomText.color = "white";
     zoomText.textWrapping = true;
     zoomText.paddingTop = "20px";
@@ -85,7 +86,7 @@ export const createScene = function () {
     // Create the pan text block.
     var panText = new BABYLON.GUI.TextBlock("panText", "Pan\nRight click + Drag (Mouse)\nTwo fingers drag (Touch)");
     panText.height = "150px";
-    panText.fontSize = 25;
+    panText.fontSize = 20;
     panText.color = "white";
     panText.textWrapping = true;
     panText.paddingTop = "20px";
@@ -100,13 +101,13 @@ export const createScene = function () {
     // Create a horizontal stack panel for the Rotate, Zoom, Pan buttons.
     var buttonStack = new BABYLON.GUI.StackPanel();
     buttonStack.isVertical = false; // Horizontal layout.
-    buttonStack.height = "50px"; // Height for the buttons.
+    buttonStack.height = "55px"; // Height for the buttons.
     buttonStack.paddingTop = "20px"; // Space above.
     modalStack.addControl(buttonStack); // Add to the main stack.
 
     // Create the Rotate button.
     var rotateButton = BABYLON.GUI.Button.CreateSimpleButton("rotateButton", "Rotate");
-    rotateButton.width = "150px";
+    rotateButton.width = "70px";
     rotateButton.height = "40px";
     rotateButton.color = "white";
     rotateButton.background = "gray";
@@ -114,7 +115,7 @@ export const createScene = function () {
 
     // Create the Zoom button.
     var zoomButton = BABYLON.GUI.Button.CreateSimpleButton("zoomButton", "Zoom");
-    zoomButton.width = "150px";
+    zoomButton.width = "70px";
     zoomButton.height = "40px";
     zoomButton.color = "white";
     zoomButton.background = "gray";
@@ -122,7 +123,7 @@ export const createScene = function () {
 
     // Create the Pan button.
     var panButton = BABYLON.GUI.Button.CreateSimpleButton("panButton", "Pan");
-    panButton.width = "150px";
+    panButton.width = "70px";
     panButton.height = "40px";
     panButton.color = "white";
     panButton.background = "gray";
@@ -134,6 +135,7 @@ export const createScene = function () {
     closeButton.height = "70px";
     closeButton.color = "white";
     closeButton.background = "red"; // Red for close.
+    closeButton.cornerRadius = "30";
     closeButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
     closeButton.paddingTop = "25px"; // Space above.
     modalStack.addControl(closeButton); // Add to the stack.
