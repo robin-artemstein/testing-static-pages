@@ -29,7 +29,7 @@ class Playground {
         modalContainer.addControl(stackPanel);
 
         const content = new BABYLON.GUI.TextBlock();
-        content.text = "Instruction... \n\n Rotate\nLeft click + Drag (Mouse). One finger + drag (Touch) \n\n Zoom\nScrolling (Mouse). Two fingers pinch (Touch) \n\n Pan\nRight click + Drag (Mouse). Two fingers drag (Touch)";
+        content.text = "Instruction... \n\n Rotate\nLeft click + Drag (Mouse)\nOne finger + drag (Touch) \n\n Zoom\nScrolling (Mouse)\nTwo fingers pinch (Touch) \n\n Pan\nRight click + Drag (Mouse)\nTwo fingers drag (Touch)";
         content.color = "white";
         content.fontSize = 23;
         content.paddingTop = "5px";
