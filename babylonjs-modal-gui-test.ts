@@ -16,8 +16,8 @@ class Playground {
         const adt = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
         const modalContainer = new BABYLON.GUI.Rectangle();
-        modalContainer.width = "700px";
-        modalContainer.height = "500px";
+        modalContainer.width = "70%";
+        modalContainer.height = "100%";
         modalContainer.cornerRadius = 30;
         modalContainer.color = "White";
         modalContainer.thickness = 4;
@@ -29,7 +29,10 @@ class Playground {
         modalContainer.addControl(stackPanel);
 
         const content = new BABYLON.GUI.TextBlock();
-        content.text = "Click the button below to close this modal dialog.";
+        content.text = "Instruction...";
+        content.text = "Rotate: Left click + Drag (Mouse). One finger + drag (Touch) ";
+        content.text = "Zoom: Scrolling (Mouse). Two fingers pinch (Touch) ";
+        content.text = "Pan: Right click + Drag (Mouse). Two fingers drag (Touch) ";
         content.color = "white";
         content.fontSize = 24;
         content.paddingTop = "5px";
