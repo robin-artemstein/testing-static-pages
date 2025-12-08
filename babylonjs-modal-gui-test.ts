@@ -29,14 +29,14 @@ class Playground {
         modalContainer.addControl(stackPanel);
 
         const content = new BABYLON.GUI.TextBlock();
-        content.text = "Instruction... \n\n Rotate: Left click + Drag (Mouse). One finger + drag (Touch) \n\n Zoom: Scrolling (Mouse). Two fingers pinch (Touch) \n\n Pan: Right click + Drag (Mouse). Two fingers drag (Touch)";
+        content.text = "Instruction... \n\n Rotate\nLeft click + Drag (Mouse). One finger + drag (Touch) \n\n Zoom\nScrolling (Mouse). Two fingers pinch (Touch) \n\n Pan\nRight click + Drag (Mouse). Two fingers drag (Touch)";
         content.color = "white";
         content.fontSize = 23;
         content.paddingTop = "5px";
         content.paddingBottom = "5px";
         content.textWrapping = true;
         content.width = 0.9;
-        content.height = "250px";
+        content.height = "500px";
         stackPanel.addControl(content);
 
         const closeButton = BABYLON.GUI.Button.CreateSimpleButton("closeButton", "Close");
