@@ -18,6 +18,7 @@ export const createScene = function () {
 
     // Create the "Need help?" button in the lower right corner.
     const helpButton = BABYLON.GUI.Button.CreateSimpleButton("helpButton", "Need help?");
+    helpButton.fontSize = "2.25%";
     helpButton.width = "150px"; // Set the width of the button.
     helpButton.height = "70px"; // Set the height of the button.
     helpButton.cornerRadius = 30;
