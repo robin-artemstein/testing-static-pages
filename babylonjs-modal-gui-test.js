@@ -139,6 +139,7 @@ export const createScene = function () {
 
     // Create the Close button at the bottom.
     const closeButton = BABYLON.GUI.Button.CreateSimpleButton("closeButton", "Close");
+    closeButton.fontSize = "7%";
     closeButton.width = "150px";
     closeButton.height = "70px";
     closeButton.cornerRadius = 30;
