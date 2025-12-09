@@ -46,13 +46,13 @@ class Playground {
         // Use a vertical stack panel inside the modal to organize elements top to bottom.
         const modalStack = new BABYLON.GUI.StackPanel();
         modalStack.width = "100%"; // Full width of the modal.
-        modalStack.paddingTop = "20px"; // Some padding at the top.
+        modalStack.paddingTop = "5px"; // Some padding at the top.
         modalRect.addControl(modalStack); // Add the stack to the modal.
 
         // Create the headline text block.
         const headLine = new BABYLON.GUI.TextBlock("headLine", "Instructions...");
-        headLine.height = "40px"; // Height for the text.
-        headLine.fontSize = 30; // Font size as specified.
+        headLine.height = "12%"; // Height for the text.
+        headLine.fontSize = "12%"; // Font size as specified.
         headLine.color = "white"; // White text.
         headLine.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER; // Center the text.
         modalStack.addControl(headLine); // Add to the stack.
@@ -62,8 +62,8 @@ class Playground {
 
         // Create the rotation text block.
         const rotationText = new BABYLON.GUI.TextBlock("rotationText", "Rotate\nLeft click + Drag (Mouse)\nOne finger drag (Touch)");
-        rotationText.height = "150px"; // Enough height for multi-line text.
-        rotationText.fontSize = 20;
+        rotationText.height = "100px"; // Enough height for multi-line text.
+        rotationText.fontSize = "8.5%";
         rotationText.color = "white";
         rotationText.textWrapping = true; // Allow wrapping if needed.
         rotationText.paddingTop = "20px";
@@ -74,20 +74,20 @@ class Playground {
 
         // Create the zoom text block.
         const zoomText = new BABYLON.GUI.TextBlock("zoomText", "Zoom\nScrolling (Mouse)\nTwo fingers pinch (Touch)");
-        zoomText.height = "150px";
-        zoomText.fontSize = 20;
+        zoomText.height = "100px";
+        zoomText.fontSize = "8.5%";
         zoomText.color = "white";
         zoomText.textWrapping = true;
         zoomText.paddingTop = "20px";
         zoomText.paddingLeft = "20px";
         zoomText.paddingRight = "20px";
-        zoomText.isVisible = false; // Invisible by default.
+        zoomText.isVisible = false; // Invisible by default.I
         modalStack.addControl(zoomText); // Add to stack.
 
         // Create the pan text block.
         const panText = new BABYLON.GUI.TextBlock("panText", "Pan\nRight click + Drag (Mouse)\nTwo fingers drag (Touch)");
-        panText.height = "150px";
-        panText.fontSize = 20;
+        panText.height = "100px";
+        panText.fontSize = "8.5%";
         panText.color = "white";
         panText.textWrapping = true;
         panText.paddingTop = "20px";
@@ -108,6 +108,7 @@ class Playground {
 
         // Create the Rotate button.
         const rotateButton = BABYLON.GUI.Button.CreateSimpleButton("rotateButton", "Rotate");
+        rotateButton.fontSize = "50%";
         rotateButton.width = "70px";
         rotateButton.height = "40px";
         rotateButton.color = "white";
@@ -116,6 +117,7 @@ class Playground {
 
         // Create the Zoom button.
         const zoomButton = BABYLON.GUI.Button.CreateSimpleButton("zoomButton", "Zoom");
+        zoomButton.fontSize = "50%";
         zoomButton.width = "70px";
         zoomButton.height = "40px";
         zoomButton.color = "white";
@@ -124,6 +126,7 @@ class Playground {
 
         // Create the Pan button.
         const panButton = BABYLON.GUI.Button.CreateSimpleButton("panButton", "Pan");
+        panButton.fontSize = "50%";
         panButton.width = "70px";
         panButton.height = "40px";
         panButton.color = "white";
