@@ -5,9 +5,10 @@
     <title>Babylon.js Slider and Text Field Example</title>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
     <style>
         body { margin: 0; }
-        #renderCanvas { width: 100%; height: 500px; touch-action: none; }
+        #renderCanvas { width: 100%; height: 700px; touch-action: none; }
     </style>
 </head>
 <body>
@@ -17,22 +18,45 @@
         var engine = new BABYLON.Engine(canvas, true);
 
         var createScene = function () {
-    var scene = new BABYLON.Scene(engine);
+            // This creates a basic Babylon Scene object (non-mesh)
+            const scene = new BABYLON.Scene(engine);
+            //Load external GLB model from GitHub
+                BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/robin-artemstein/testing-static-pages/main/", "bullet-for-assult-2025-11-7-1.glb", scene).then((result) => {
+                    // Retrieve the loaded model (assuming the model is the first root node)
+                    const model = result.meshes[0];
 
-    // This creates and positions a free camera (non-mesh)
-    var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+                    // Setting coordinate position for loaded model, for instance, move it to (x: -0.25, y: -01, z: 0)
+                    model.position = new BABYLON.Vector3(0.1, 0.1, 0);
 
-    // Create a basic light to illuminate the scene if needed (though GUI doesn't require it)
-    var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+                    // Optional: Setting scaling ratio for the loaded model (if the model is too small or too large)
+                    model.scaling = new BABYLON.Vector3(0.25, 0.25, 0.25); // Setting the scaling ratio
 
-    // Create the GUI
-    var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+                    // Optional: Setting rotation for the loaded model (in radians)
+                    model.rotation = new BABYLON.Vector3(0, Math.PI / 1, 0); // Rotate 90 degrees along the Y-axis.
+                }).catch((error) => {
+                    console.error("Model loading failed:", error);
+                });
+            // Create default camera and light in the scene
+            scene.createDefaultCameraOrLight(true, true, true);
+            const camera = scene.activeCamera;
+            if (camera && camera instanceof BABYLON.ArcRotateCamera) {
+                // Use safely the unique feature for ArcRotateCamera...
+                camera.alpha = - Math.PI / 2;
+                camera.beta = Math.PI / 2;
+                camera.radius = 1.5;
+                camera.wheelPrecision = 500;
+            } else {
+            console.error("The activeCamera does not support ArcRotateCamera...");
+            }
 
-    // Create a stack panel to hold the controls vertically
+            // Create the GUI
+            const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+            // Create a stack panel to hold the controls vertically
             const stackPanel = new BABYLON.GUI.StackPanel();
             stackPanel.width = "95%";
             stackPanel.left = "3%";
-            stackPanel.top = "27%";
+            stackPanel.top = "23%"
             stackPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
             stackPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
             advancedTexture.addControl(stackPanel);
@@ -40,6 +64,8 @@
             // Create the text block for the integer number display
             const textBlockInteger = new BABYLON.GUI.TextBlock();
             textBlockInteger.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
+            textBlockInteger.paddingLeft = "50px";
+            textBlockInteger.paddingBottom = "1px";
             textBlockInteger.text = "0";
             textBlockInteger.color = "white";
             textBlockInteger.fontSize = 24;
@@ -68,6 +94,7 @@
             // Create the text block for the decimal number display
             const textBlockDecimal = new BABYLON.GUI.TextBlock();
             textBlockDecimal.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
+            textBlockDecimal.paddingLeft = "50px";
             textBlockDecimal.text = "1.00";
             textBlockDecimal.color = "white";
             textBlockDecimal.fontSize = 24;
@@ -102,19 +129,20 @@
             });
 
             // Create the text block for the dummy display
-            const textDummy = new BABYLON.GUI.TextBlock();
-            textDummy.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
-            textDummy.text = "1.00";
-            textDummy.color = "white";
-            textDummy.fontSize = 24;
-            textDummy.height = "50px";
-            stackPanel.addControl(textDummy);
+            const textBlockDummy = new BABYLON.GUI.TextBlock();
+            textBlockDummy.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
+            textBlockDummy.paddingLeft = "50px";
+            textBlockDummy.text = "0";
+            textBlockDummy.color = "white";
+            textBlockDummy.fontSize = 24;
+            textBlockDummy.height = "50px";
+            stackPanel.addControl(textBlockDummy);
 
-            // Create the horizontal slider GUI for the decimal number switch
+            // Create the horizontal slider GUI for the integer number switch
             const sliderDummy = new BABYLON.GUI.Slider();
             sliderDummy.thumbColor = "blue";
             sliderDummy.minimum = 0;
-            sliderDummy.maximum = 1;
+            sliderDummy.maximum = 100;
             sliderDummy.value = 0;
             sliderDummy.height = "20px";
             sliderDummy.width = "95%";
@@ -122,22 +150,14 @@
             sliderDummy.isPointerBlocker = true; // Ensure the slider captures pointer (mouse/touch) events
             stackPanel.addControl(sliderDummy);
 
-            // Update the text block when slider value changes the decimal number
+            // Update the text block when slider value changes the integer number
             sliderDummy.onValueChangedObservable.add(function (value) {
-                // 'value' is a number between 0 (left) and 1 (right), based on our minimum/maximum.
-                // We need to map this simple 0-to-1 range to the client's desired range of 1.5 down to 0.5.
-                // The formula for this mapping is:
-                // New Value = Max Range + (Slider Value * (Min Range - Max Range))
-                // New Value = 1.5 + (value * (0.5 - 1.5))
-                // New Value = 1.5 + (value * -1)
-                const mappedValue = 1.5 + (value * -1);
-                // Print the variable mappedValue at the console
-                console.log(mappedValue + " is " + typeof mappedValue);
-                // Format the number to two decimal places for display in the text box.
-                textDummy.text = mappedValue.toFixed(2);
+                let textNumber = Math.round(value)
+                console.log(textNumber + " is " + typeof textNumber);
+                textBlockDummy.text = textNumber.toString(); // Round to nearest integer for display
             });
 
-    return scene;
+            return scene;
 };
 
         var scene = createScene();
