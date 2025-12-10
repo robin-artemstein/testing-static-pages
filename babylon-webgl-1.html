@@ -8,7 +8,7 @@
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
     <style>
         body { margin: 0; }
-        #renderCanvas { width: 100%; height: 700px; touch-action: none; }
+        #renderCanvas { width: 100%; height: 550px; touch-action: none; }
     </style>
 </head>
 <body>
@@ -44,7 +44,15 @@
                 camera.alpha = - Math.PI / 2;
                 camera.beta = Math.PI / 2;
                 camera.radius = 1.5;
-                camera.wheelPrecision = 500;
+                // Limit Zooming speed for mouse
+                camera.wheelPrecision = 0.005;
+                camera.wheelDeltaPercentage = 0.005;
+                // Limit zooming speed for touch devices
+                camera.pinchPrecision = 0.005;
+                camera.pinchDeltaPercentage = 0.005;
+                // Limit panning speed for both of mouse and touch devices
+                // Panning speed setting, smaller means faster panning and larger means slower panning
+                camera.panningSensibility = 5000;// Panning speed setting, smaller means faster panning
             } else {
             console.error("The activeCamera does not support ArcRotateCamera...");
             }
@@ -56,7 +64,7 @@
             const stackPanel = new BABYLON.GUI.StackPanel();
             stackPanel.width = "95%";
             stackPanel.left = "3%";
-            stackPanel.top = "23%"
+            stackPanel.top = "30%";
             stackPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
             stackPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
             advancedTexture.addControl(stackPanel);
