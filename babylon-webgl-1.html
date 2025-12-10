@@ -20,6 +20,7 @@
         var createScene = function () {
             // This creates a basic Babylon Scene object (non-mesh)
             const scene = new BABYLON.Scene(engine);
+            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
             //Load external GLB model from GitHub
                 BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/robin-artemstein/testing-static-pages/main/", "bullet-for-assult-2025-11-7-1.glb", scene).then((result) => {
                     // Retrieve the loaded model (assuming the model is the first root node)
@@ -38,6 +39,7 @@
                 });
             // Create default camera and light in the scene
             scene.createDefaultCameraOrLight(true, true, true);
+            scene.createDefaultEnvironment();
             const camera = scene.activeCamera;
             if (camera && camera instanceof BABYLON.ArcRotateCamera) {
                 // Use safely the unique feature for ArcRotateCamera...
