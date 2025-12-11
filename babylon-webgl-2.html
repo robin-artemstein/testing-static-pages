@@ -1,93 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Babylon.js Demo: Cube and Sphere with Rotation and Zoom</title>
-    <!-- 引入Babylon.js庫，從CDN載入，確保是最新的穩定版本 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Babylon.js interactive 3D viewer test...</title>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        html, body {
-            overflow: hidden;
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        #renderCanvas {
-            width: 100%;
-            height: 100%;
-            touch-action: none; /* 防止瀏覽器默認觸控行為干擾 */
-        }
+        body { margin: 0; }
+        #renderCanvas { width: 100%; height: 450px; touch-action: none; }
     </style>
 </head>
 <body>
-    <!-- Canvas元素，用於渲染Babylon.js場景 -->
-    <canvas id="renderCanvas"></canvas>
+    <div class="text-2xl p-6 font-bold text-black bg-blue-100">Interactive 3D viewer</div>
+    <div class="relative shadow-2xl">
+        <div class="absolute bottom-4 right-4 bg-blue-700 text-white px-4 py-2 rounded-lg shadow-lg">
+             <a href="#">Help...</a> 
+        </div>
+        <canvas id="renderCanvas"></canvas>
+    </div>
+    <div>
+        <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin congue est nec turpis sodales sodales. Donec congue a ex ut sagittis. Praesent faucibus semper est eu accumsan. In fringilla posuere hendrerit. Sed id mattis diam. Integer et vehicula libero. Sed eget ipsum malesuada, dictum mauris vel, vestibulum quam. Donec sed pulvinar eros, convallis tempor massa. Praesent vitae volutpat est. Morbi ac tellus ut tortor tempus aliquam. Pellentesque consequat nisi eu eros condimentum, a interdum odio bibendum. Fusce tristique orci nec ipsum laoreet, vitae bibendum odio suscipit. Curabitur malesuada dolor est, et dictum tortor condimentum quis.</p>
+        <p> Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent vitae ante dapibus, ullamcorper metus non, ullamcorper sapien. Sed nec viverra neque. Cras tempor lectus et metus suscipit imperdiet nec eget nulla. Maecenas ac nulla eu ex imperdiet imperdiet at sed arcu. Aliquam condimentum, est at scelerisque dignissim, nunc tortor viverra tellus, vel consequat elit tellus sed lectus. Nunc lacus enim, efficitur nec dignissim ut, iaculis ac lacus. Donec sed dictum nisl. Proin id tristique tortor. Suspendisse pharetra finibus justo vel efficitur. Vestibulum id rutrum magna.</p>
+        <p> Morbi sit amet mi nec dolor ultrices condimentum in at arcu. Donec faucibus efficitur tempus. Nulla facilisi. Nunc ipsum lorem, volutpat non velit eget, sodales faucibus felis. Quisque sollicitudin molestie ante vel mollis. Morbi mollis augue eget eleifend elementum. Morbi hendrerit rutrum sollicitudin. Nulla luctus consequat hendrerit. Proin magna massa, maximus dictum consectetur non, placerat eu leo. Duis pellentesque massa lorem, ac lobortis nisl consequat lobortis. Mauris leo diam, tincidunt eget lectus non, tempus pellentesque odio. Integer cursus interdum mauris, dapibus porta nisl fringilla quis. Donec elit ex, volutpat ut faucibus nec, facilisis egestas ipsum.</p>
+        <p> Praesent at nunc est. Vestibulum consectetur, diam eu feugiat fermentum, est erat tristique elit, in viverra massa sapien nec lacus. Suspendisse sit amet volutpat sapien, id pretium turpis. Sed eros leo, pellentesque eu ultricies et, tincidunt sit amet lorem. Fusce vel lacus in tortor malesuada pellentesque nec at arcu. Integer interdum lacus id justo interdum mattis. Proin eu massa dignissim, bibendum augue in, ultrices massa. Quisque pharetra, quam quis lacinia volutpat, ligula felis volutpat lacus, vitae maximus justo ex nec risus. Mauris scelerisque purus nec auctor porttitor. Duis sit amet tempor mi. Sed volutpat nulla rutrum, placerat elit sit amet, maximus arcu. Curabitur lacinia molestie augue, sed imperdiet magna pretium ac. Pellentesque euismod finibus velit in egestas. Etiam vestibulum nisl porta ante tincidunt rhoncus at vel enim. Praesent volutpat tempus scelerisque.</p>
+        <p> Donec eu ultricies neque, nec porttitor sapien. Phasellus faucibus sagittis felis in hendrerit. Etiam accumsan egestas dolor vitae elementum. Nulla ex erat, suscipit rutrum tortor eu, vestibulum convallis ante. Donec sed nisl sit amet augue ullamcorper sollicitudin. Maecenas non magna porta, feugiat est non, commodo tortor. Donec in luctus lorem, eu pharetra massa. Integer non sagittis massa, quis placerat mi. Nunc at finibus nulla.</p>
+    </div>
+    <div></div>
     <script>
-        // 獲取Canvas元素
-        const canvas = document.getElementById("renderCanvas");
+        var canvas = document.getElementById("renderCanvas");
+        var engine = new BABYLON.Engine(canvas, true);
 
-        // 創建Babylon.js引擎，啟用WebGL渲染
-        const engine = new BABYLON.Engine(canvas, true); // true表示啟用抗鋸齒
-
-        // 定義創建場景的函數
-        function createScene() {
-            // 創建一個新的場景
+        var createScene = function () {
+            // This creates a basic Babylon Scene object (non-mesh)
             const scene = new BABYLON.Scene(engine);
-
-            // 創建ArcRotateCamera，這是支持旋轉和縮放的相機類型
-            // 參數：名稱、alpha（初始水平角度）、beta（初始垂直角度）、radius（初始距離）、目標位置、場景
-            const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2.5, 10, BABYLON.Vector3.Zero(), scene);
-
-            // 將相機附加到Canvas，啟用滑鼠和觸控控制
-            // 這將自動處理滑鼠拖曳旋轉、滾輪縮放、觸控拖曳旋轉和捏合縮放
-            camera.attachControl(canvas, true);
-
-            // 添加半球燈光，模擬自然光線
-            // 參數：名稱、方向、場景
             const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+            //Load external GLB model from GitHub
+                BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/robin-artemstein/testing-static-pages/main/", "bullet-for-assult-2025-11-7-1.glb", scene).then((result) => {
+                    // Retrieve the loaded model (assuming the model is the first root node)
+                    const model = result.meshes[0];
 
-            // 需求1: 添加一個方型（立方體）3D模型
-            // 使用MeshBuilder創建Box，這是Babylon.js內建的基本形狀，不需外部檔案
-            // 假設"從外部根目錄添加"意指在程式中直接創建並添加到場景
-            const cube = BABYLON.MeshBuilder.CreateBox("cube", { size: 2 }, scene);
-            // 設定立方體位置，略微向左移動以便與球體區分
-            cube.position = new BABYLON.Vector3(-2, 0, 0);
-            // 添加材質以增加視覺效果（可選，但提升可見度）
-            const cubeMaterial = new BABYLON.StandardMaterial("cubeMaterial", scene);
-            cubeMaterial.diffuseColor = new BABYLON.Color3(0.5, 0.5, 1); // 藍色
-            cube.material = cubeMaterial;
+                    // Setting coordinate position for loaded model, for instance, move it to (x: -0.25, y: -01, z: 0)
+                    model.position = new BABYLON.Vector3(0.1, 0.1, 0);
 
-            // 需求1: 添加一個球型（球體）3D模型
-            // 使用MeshBuilder創建Sphere，這是Babylon.js內建的基本形狀
-            const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 2 }, scene);
-            // 設定球體位置，略微向右移動
-            sphere.position = new BABYLON.Vector3(2, 0, 0);
-            // 添加材質
-            const sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
-            sphereMaterial.diffuseColor = new BABYLON.Color3(1, 0.5, 0.5); // 紅色
-            sphere.material = sphereMaterial;
+                    // Optional: Setting scaling ratio for the loaded model (if the model is too small or too large)
+                    model.scaling = new BABYLON.Vector3(0.25, 0.25, 0.25); // Setting the scaling ratio
 
-            // 添加地面以提供參考（可選，但幫助理解3D空間）
-            const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 10, height: 10 }, scene);
-            const groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-            groundMaterial.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.8); // 灰色
-            ground.material = groundMaterial;
+                    // Optional: Setting rotation for the loaded model (in radians)
+                    model.rotation = new BABYLON.Vector3(0, Math.PI / 1, 0); // Rotate 90 degrees along the Y-axis.
+                }).catch((error) => {
+                    console.error("Model loading failed:", error);
+                });
+            // Create default camera and light in the scene
+            scene.createDefaultCameraOrLight(true, true, true);
+            scene.createDefaultEnvironment();
+            const camera = scene.activeCamera;
+            if (camera && camera instanceof BABYLON.ArcRotateCamera) {
+                // Use safely the unique feature for ArcRotateCamera...
+                camera.alpha = - Math.PI / 2;
+                camera.beta = Math.PI / 2;
+                camera.radius = 1.5;
+                // Limit Zooming speed for mouse
+                camera.wheelPrecision = 0.005;
+                camera.wheelDeltaPercentage = 0.005;
+                // Limit zooming speed for touch devices
+                camera.pinchPrecision = 0.005;
+                camera.pinchDeltaPercentage = 0.005;
+                // Limit panning speed for both of mouse and touch devices
+                // Panning speed setting, smaller means faster panning and larger means slower panning
+                camera.panningSensibility = 5000;// Panning speed setting, smaller means faster panning
+            } else {
+            console.error("The activeCamera does not support ArcRotateCamera...");
+            }
 
-            // 返回場景
             return scene;
-        }
+};
 
-        // 創建場景
-        const scene = createScene();
+        var scene = createScene();
 
-        // 啟動渲染循環
         engine.runRenderLoop(function () {
-            scene.render(); // 每幀渲染場景
+            scene.render();
         });
 
-        // 處理視窗大小變化，調整引擎大小
+        // Resize the engine on window resize
         window.addEventListener("resize", function () {
             engine.resize();
         });
