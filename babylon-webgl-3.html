@@ -113,6 +113,16 @@
             panButton.thickness = 3;
             buttonStack.addControl(panButton);
 
+            // Botton GUI change from gray to blue when clicked
+            const buttons = [rotateButton, zoomButton, panButton];
+            const selectedButton = function(selected) {
+                buttons.forEach(btn => {btn.background = "gray"});
+                selected.background = "blue";
+            };
+            rotateButton.onPointerUpObservable.add(() => selectedButton(rotateButton));
+            zoomButton.onPointerUpObservable.add(() => selectedButton(zoomButton));
+            panButton.onPointerUpObservable.add(() => selectedButton(panButton));
+
             // Create a container for the instruction texts (we'll add them to the main stack).
             // But since they overlap in position, we'll add them separately and control visibility.
 
@@ -216,4 +226,3 @@
     </script>
 </body>
 </html>
-
