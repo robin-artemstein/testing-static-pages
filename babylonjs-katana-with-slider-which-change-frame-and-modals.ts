@@ -97,7 +97,7 @@ class Playground {
         rotateButton.width = "100px";
         rotateButton.height = "50px";
         rotateButton.color = "white";
-        rotateButton.background = "gray";
+        rotateButton.background = "blue";
         rotateButton.thickness = 3;
         buttonStack.addControl(rotateButton);
 
@@ -120,6 +120,16 @@ class Playground {
         panButton.background = "gray";
         panButton.thickness = 3;
         buttonStack.addControl(panButton);
+
+        // Botton GUI change from gray to blue when clicked
+        const buttons = [rotateButton, zoomButton, panButton];
+        const selectedButton = function(selected) {
+            buttons.forEach(btn => {btn.background = "gray"});
+            selected.background = "blue";
+        };
+        rotateButton.onPointerUpObservable.add(() => selectedButton(rotateButton));
+        zoomButton.onPointerUpObservable.add(() => selectedButton(zoomButton));
+        panButton.onPointerUpObservable.add(() => selectedButton(panButton));
 
         // Create a container for the instruction texts (we'll add them to the main stack).
         // But since they overlap in position, we'll add them separately and control visibility.
@@ -170,7 +180,7 @@ class Playground {
         closeButton.height = "70px";
         closeButton.cornerRadius = 30;
         closeButton.color = "white";
-        closeButton.background = "red"; // Red for close.
+        closeButton.background = "blue"; // Red for close.
         closeButton.thickness = 3;
         closeButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         closeButton.paddingTop = "20px"; // Space above.
