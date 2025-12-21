@@ -1,9 +1,31 @@
 class Playground {
     public static CreateScene(engine: BABYLON.Engine, canvas: HTMLCanvasElement): BABYLON.Scene {
-        // Get references to canvas, which are automatically set up in the Playground environment.
+        // This creates a basic Babylon Scene object (non-mesh)
         const scene = new BABYLON.Scene(engine);
+        const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+        // Store a reference to the loaded model animation group; it will be used later.
+        let katanaAnimationGroup = null;
 
-        //Create the the default camera in the scene.
+        // Load the GLB model from the specified URL
+        const modelURL = "https://raw.githubusercontent.com/robin-artemstein/testing-static-pages/main/";
+        const modelName = "Katana3.glb";
+
+        BABYLON.SceneLoader.ImportMesh("", modelURL, modelName, scene, function(meshes, particleSystems, skeletons, animationGroups) {
+            // Callback function after loading completes
+
+            // The loaded model may be large or small; it is scaled here to fit the scene.
+            meshes[0].scaling = new BABYLON.Vector3(2, 2, 2);
+
+            // Save the reference of the animation group
+            katanaAnimationGroup = animationGroups[0];
+            console.log("GLB model is loaded successfully:", katanaAnimationGroup.name);
+
+            // Set the current frame number to 1 (Babylon.js uses a 0-based frame index, so the first frame is actually index 0).
+            // Use the setCurrentFrame() method to move the model to a specific pose.
+            katanaAnimationGroup.pause(); // Pause immediately
+            katanaAnimationGroup.goToFrame(1); // Jump to frame 1 (index 1)
+        });
+        // Create default camera and light in the scene
         scene.createDefaultCameraOrLight(true, true, true);
         scene.createDefaultEnvironment();
         const camera = scene.activeCamera as BABYLON.ArcRotateCamera;
@@ -13,34 +35,54 @@ class Playground {
         camera.lowerRadiusLimit = 0.25;
         camera.upperRadiusLimit = 10;
 
-
-        // Store a reference to the loaded model animation group; it will be used later.
-        let katanaAnimationGroup = null;
-
-        // Load the GLB model from the specified URL
-        const modelURL = "https://raw.githubusercontent.com/robin-artemstein/testing-static-pages/main/";
-        const modelName = "Katana3.glb";
-    
-        BABYLON.SceneLoader.ImportMesh("", modelURL, modelName, scene, function (meshes, particleSystems, skeletons, animationGroups) {
-            // Callback function after loading completes
-
-            // The loaded model may be large or small; it is scaled here to fit the scene.
-            meshes[0].scaling = new BABYLON.Vector3(2, 2, 2);
-
-            // Save the reference of the animation group
-            katanaAnimationGroup = animationGroups[0];
-            console.log("Model and animation are load successfully:", katanaAnimationGroup.name);
-
-            // Set the current frame number to 1 (Babylon.js uses a 0-based frame index, so the first frame is actually index 0).
-            // Use the setCurrentFrame() method to move the model to a specific pose.
-            katanaAnimationGroup.pause(); // Pause immediately
-            katanaAnimationGroup.goToFrame(1); // Jump to frame 1 (index 1)
-
-        });
-
-        // Create a button GUI
         // Create an Advanced Dynamic Texture (ADT) to draw a 2D GUI over the scene.
         const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+        // Create a stack panel for slider GUI
+        const stackPanelSlider = new BABYLON.GUI.StackPanel();
+        stackPanelSlider.isVisible = true;
+        stackPanelSlider.width = "450px";
+        stackPanelSlider.left = "1%"
+        stackPanelSlider.top = "40%";
+        stackPanelSlider.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+        advancedTexture.addControl(stackPanelSlider);
+
+        // Create the text block (displaying the number)
+        const textBlockSlider = new BABYLON.GUI.TextBlock();
+        textBlockSlider.paddingLeft = "5px";
+        textBlockSlider.paddingBottom = "1px";
+        textBlockSlider.text = "Unsheathe / Sheathe";
+        textBlockSlider.color = "white";
+        textBlockSlider.fontSize = 24;
+        textBlockSlider.height = "50px";
+        stackPanelSlider.addControl(textBlockSlider);
+
+        // Create the horizontal slider
+        const slider = new BABYLON.GUI.Slider();
+        slider.thumbColor = "blue";
+        slider.minimum = 0;
+        slider.maximum = 230;
+        slider.value = 0;
+        slider.height = "20px";
+        slider.width = "450px";
+        slider.isVertical = false; // Ensure horizontal
+        slider.isPointerBlocker = true; // Ensure the slider captures pointer (mouse/touch) events
+        stackPanelSlider.addControl(slider);
+
+        // Update the text block number and make the animation pause at specific frame when slider value changes
+        slider.onValueChangedObservable.add(function(value) {
+            let textNumber = Math.round(value)
+            console.log(textNumber + " is " + typeof textNumber);
+            if (katanaAnimationGroup) {
+                console.log("When the button is clicked, the animation moves to frame 55.");
+
+                // Go to and pause at the specific frame.
+                katanaAnimationGroup.goToFrame(textNumber);
+                katanaAnimationGroup.pause();
+            } else {
+                console.log("The model has not been loaded, so animation operations cannot be performed.");
+            }
+        });
 
         // Create the "Need help?" button in the lower right corner.
         const helpButton = BABYLON.GUI.Button.CreateSimpleButton("helpButton", "Help");
@@ -124,7 +166,9 @@ class Playground {
         // Botton GUI change from gray to blue when clicked
         const buttons = [rotateButton, zoomButton, panButton];
         const selectedButton = function(selected) {
-            buttons.forEach(btn => {btn.background = "gray"});
+            buttons.forEach(btn => {
+                btn.background = "gray"
+            });
             selected.background = "blue";
         };
         rotateButton.onPointerUpObservable.add(() => selectedButton(rotateButton));
@@ -187,83 +231,40 @@ class Playground {
         modalStack.addControl(closeButton); // Add to the stack.
 
         // Event: When "Need help?" is clicked, show the modal.
-        helpButton.onPointerUpObservable.add(function () {
+        helpButton.onPointerUpObservable.add(function() {
             modalRect.isVisible = true; // Make modal visible.
+            stackPanelSlider.isVertical = false; //Make slider stack panel invisible.
         });
 
         // Event: When Rotate button is clicked, show rotation text, hide others.
-        rotateButton.onPointerUpObservable.add(function () {
+        rotateButton.onPointerUpObservable.add(function() {
             rotateText.isVisible = true;
             zoomText.isVisible = false;
             panText.isVisible = false;
         });
 
         // Event: When Zoom button is clicked, show zoom text, hide others.
-        zoomButton.onPointerUpObservable.add(function () {
+        zoomButton.onPointerUpObservable.add(function() {
             rotateText.isVisible = false;
             zoomText.isVisible = true;
             panText.isVisible = false;
         });
 
         // Event: When Pan button is clicked, show pan text, hide others.
-        panButton.onPointerUpObservable.add(function () {
+        panButton.onPointerUpObservable.add(function() {
             rotateText.isVisible = false;
             zoomText.isVisible = false;
             panText.isVisible = true;
         });
 
         // Event: When Close is clicked, hide the modal.
-        closeButton.onPointerUpObservable.add(function () {
-            modalRect.isVisible = false; // Hide the entire modal.
+        closeButton.onPointerUpObservable.add(function() {
+            modalRect.isVisible = false; // Make modal invisible.
+            stackPanelSlider.isVertical = true; //Make slider stack panel visible.
         });
-
-        // Create a stack panel for slider GUI
-        const stackPanelSlider = new BABYLON.GUI.StackPanel();
-        stackPanelSlider.width = "450px";
-        stackPanelSlider.left = "1%"
-        stackPanelSlider.top = "40%";
-        stackPanelSlider.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-        advancedTexture.addControl(stackPanelSlider);
-
-        // Create the text block (displaying the number)
-        const textBlockSlider = new BABYLON.GUI.TextBlock();
-        textBlockSlider.paddingLeft = "5px";
-        textBlockSlider.paddingBottom = "1px";
-        textBlockSlider.text = "Unsheathe / Sheathe";
-        textBlockSlider.color = "white";
-        textBlockSlider.fontSize = 24;
-        textBlockSlider.height = "50px";
-        stackPanelSlider.addControl(textBlockSlider);
-
-        // Create the horizontal slider
-        const slider = new BABYLON.GUI.Slider();
-        slider.thumbColor = "blue";
-        slider.minimum = 0;
-        slider.maximum = 230;
-        slider.value = 0;
-        slider.height = "20px";
-        slider.width = "450px";
-        slider.isVertical = false; // Ensure horizontal
-        slider.isPointerBlocker = true; // Ensure the slider captures pointer (mouse/touch) events
-        stackPanelSlider.addControl(slider);
-
-        // Update the text block number and make the animation pause at specific frame when slider value changes
-        slider.onValueChangedObservable.add(function (value) {
-            let textNumber = Math.round(value)
-            console.log(textNumber + " is " + typeof textNumber);
-            if (katanaAnimationGroup) {
-                console.log("When the button is clicked, the animation moves to frame 55.");
-
-                // Go to and pause at the specific frame.
-                katanaAnimationGroup.goToFrame(textNumber); 
-                katanaAnimationGroup.pause();
-            } else {
-                console.log("The model has not been loaded, so animation operations cannot be performed.");
-            }
-        });
-
-        // Returning the scene object is the standard practice required by Playground.
         return scene;
     }
 }
-export { Playground };
+export {
+    Playground
+};
