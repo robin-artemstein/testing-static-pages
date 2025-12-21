@@ -209,9 +209,9 @@ class Playground {
 
         // Create a stack panel for slider GUI
         const stackPanelSlider = new BABYLON.GUI.StackPanel();
-        stackPanelSlider.width = "300px";
+        stackPanelSlider.width = "450px";
         stackPanelSlider.left = "1%"
-        stackPanelSlider.top = "35%";
+        stackPanelSlider.top = "40%";
         stackPanelSlider.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
         advancedTexture.addControl(stackPanelSlider);
 
@@ -232,7 +232,7 @@ class Playground {
         slider.maximum = 230;
         slider.value = 0;
         slider.height = "20px";
-        slider.width = "300px";
+        slider.width = "450px";
         slider.isVertical = false; // Ensure horizontal
         slider.isPointerBlocker = true; // Ensure the slider captures pointer (mouse/touch) events
         stackPanelSlider.addControl(slider);
