@@ -40,8 +40,8 @@ export default function BabylonjsScene() {
       scene
     ).then((result) => {
       result.meshes.forEach((mesh) => {
-        mesh.position = new BABYLON.Vector3(-0.25, -0.1, 0);
-        mesh.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+        mesh.position = new BABYLON.Vector3(0.15, 0.1, 0);
+        mesh.scaling = new BABYLON.Vector3(0.15, 0.15, 0.15);
 
       })
     })
