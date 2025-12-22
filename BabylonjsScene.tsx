@@ -41,7 +41,7 @@ export default function BabylonjsScene() {
     ).then((result) => {
       result.meshes.forEach((mesh) => {
         mesh.position = new BABYLON.Vector3(0.15, 0.1, 0);
-        mesh.scaling = new BABYLON.Vector3(0.15, 0.15, 0.15);
+        mesh.scaling = new BABYLON.Vector3(0.2, 0.2, 0.2);
 
       })
     })
@@ -93,7 +93,7 @@ export default function BabylonjsScene() {
   return (
     <canvas
       ref={canvasRef}
-      className="w-full h-full block"
+      style={{width: "100%", height: "550px"}}
     />
   )
 }
