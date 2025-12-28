@@ -73,14 +73,15 @@
                 const stackPanelSlider = new BABYLON.GUI.StackPanel();
                 stackPanelSlider.isVisible = true;
                 stackPanelSlider.width = "70%";
-                stackPanelSlider.left = "1%"
+                stackPanelSlider.left = "-7%"
                 stackPanelSlider.top = "40%";
                 stackPanelSlider.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
                 advancedTexture.addControl(stackPanelSlider);
 
                 // Create the text block (displaying the number)
                 const textBlockSlider = new BABYLON.GUI.TextBlock();
-                textBlockSlider.paddingLeft = "5px";
+                textBlockSlider.textHorizontalAlignment = GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
+                textBlockSlider.paddingLeft = "200px";
                 textBlockSlider.paddingBottom = "1px";
                 textBlockSlider.text = "Unsheathe / Sheathe";
                 textBlockSlider.color = "white";
@@ -118,7 +119,7 @@
                 // Create the "Need help?" button in the lower right corner.
                 const helpButton = BABYLON.GUI.Button.CreateSimpleButton("helpButton", "Help");
                 helpButton.fontSize = "3.5%";
-                helpButton.width = "150px"; // Set the width of the button.
+                helpButton.width = "130px"; // Set the width of the button.
                 helpButton.height = "70px"; // Set the height of the button.
                 helpButton.cornerRadius = 30;
                 helpButton.color = "white"; // Text color.
