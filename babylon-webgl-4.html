@@ -20,13 +20,12 @@
         var createScene = function () {
             // This creates a basic Babylon Scene object (non-mesh)
             const scene = new BABYLON.Scene(engine);
-            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
             // Store a reference to the loaded model animation group; it will be used later.
             let katanaAnimationGroup = null;
 
             // Load the GLB model from the specified URL
-            const modelURL = "https://raw.githubusercontent.com/robin-artemstein/testing-static-pages/main/";
-            const modelName = "Katana3.glb";
+            const modelURL = "https://raw.githubusercontent.com/robin-artemstein/babylonjs-test/main/";
+            const modelName = "katana-5-v1.glb";
 
             BABYLON.SceneLoader.ImportMesh("", modelURL, modelName, scene, function(meshes, particleSystems, skeletons, animationGroups) {
                 // Callback function after loading completes
@@ -45,8 +44,10 @@
 
     });
             // Create default camera and light in the scene
+            scene.clearColor = new BABYLON.Color3(0.15, 0.15, 0.25);
+            const hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("https://playground.babylonjs.com/textures/environment.env", scene);
+            scene.environmentTexture = hdrTexture;
             scene.createDefaultCameraOrLight(true, true, true);
-            scene.createDefaultEnvironment();
             const camera = scene.activeCamera;
             if (camera && camera instanceof BABYLON.ArcRotateCamera) {
                 // Use safely the unique feature for ArcRotateCamera...
@@ -72,15 +73,17 @@
                 // Create a stack panel for slider GUI
                 const stackPanelSlider = new BABYLON.GUI.StackPanel();
                 stackPanelSlider.isVisible = true;
-                stackPanelSlider.width = "70%";
-                stackPanelSlider.left = "-7%"
+                stackPanelSlider.width = "450px";
+                stackPanelSlider.left = "1%"
                 stackPanelSlider.top = "40%";
                 stackPanelSlider.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
                 advancedTexture.addControl(stackPanelSlider);
 
                 // Create the text block (displaying the number)
                 const textBlockSlider = new BABYLON.GUI.TextBlock();
-                textBlockSlider.text = "Draw & Sheathe";
+                textBlockSlider.paddingLeft = "5px";
+                textBlockSlider.paddingBottom = "1px";
+                textBlockSlider.text = "Unsheathe / Sheathe";
                 textBlockSlider.color = "white";
                 textBlockSlider.fontSize = 24;
                 textBlockSlider.height = "50px";
@@ -93,7 +96,7 @@
                 slider.maximum = 230;
                 slider.value = 0;
                 slider.height = "20px";
-                slider.width = "70%";
+                slider.width = "450px";
                 slider.isVertical = false; // Ensure horizontal
                 slider.isPointerBlocker = true; // Ensure the slider captures pointer (mouse/touch) events
                 stackPanelSlider.addControl(slider);
@@ -116,7 +119,7 @@
                 // Create the "Need help?" button in the lower right corner.
                 const helpButton = BABYLON.GUI.Button.CreateSimpleButton("helpButton", "Help");
                 helpButton.fontSize = "3.5%";
-                helpButton.width = "130px"; // Set the width of the button.
+                helpButton.width = "150px"; // Set the width of the button.
                 helpButton.height = "70px"; // Set the height of the button.
                 helpButton.cornerRadius = 30;
                 helpButton.color = "white"; // Text color.
@@ -260,6 +263,7 @@
                 // Event: When "Need help?" is clicked, show the modal.
                 helpButton.onPointerUpObservable.add(function () {
                     modalRect.isVisible = true; // Make modal visible.
+                    stackPanelSlider.isVertical = false; //Make slider stack panel invisible.
                 });
 
                 // Event: When Rotate button is clicked, show rotation text, hide others.
