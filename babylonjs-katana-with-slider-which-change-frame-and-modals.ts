@@ -90,6 +90,34 @@ class Playground {
             }
         });
 
+        // ========================
+        // Keyboard handling: Ctrl + H to toggle visibility
+        // ========================
+        let isCtrlPressed = false;
+
+        scene.onKeyboardObservable.add((kbInfo) => {
+            switch (kbInfo.type) {
+                case BABYLON.KeyboardEventTypes.KEYDOWN:
+                    if (kbInfo.event.key === "Control" || kbInfo.event.key === "Meta") {
+                        isCtrlPressed = true;
+                    }
+                    // Ctrl + H
+                    if (isCtrlPressed && (kbInfo.event.key === "h" || kbInfo.event.key === "H")) {
+                        stackPanel.isVisible = !stackPanel.isVisible;
+                        // Optional: prevent default browser behavior (e.g. history back)
+                        kbInfo.event.preventDefault();
+                    }
+                    break;
+
+                case BABYLON.KeyboardEventTypes.KEYUP:
+                    if (kbInfo.event.key === "Control" || kbInfo.event.key === "Meta") {
+                        isCtrlPressed = false;
+                    }
+                    break;
+        }
+    });
+
+
         // Returning the scene object is the standard practice required by Playground.
         return scene;
     }
