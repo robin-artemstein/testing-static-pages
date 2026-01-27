@@ -2,7 +2,7 @@ class Playground {
     public static CreateScene(engine: BABYLON.Engine, canvas: HTMLCanvasElement): BABYLON.Scene {
         // Get references to canvas, which are automatically set up in the Playground environment.
         const scene = new BABYLON.Scene(engine);
-        scene.clearColor = new BABYLON.Color3(0.15, 0.15, 0.25);
+        scene.clearColor = new BABYLON.Color4(0.15, 0.15, 0.25, 1);
 
         //Create the the default camera in the scene.
         const hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("textures/environment.env", scene);
