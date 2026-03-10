@@ -61,7 +61,7 @@ class Playground {
             btn.height = "40px";
             btn.color = "white";
             btn.background = "#333";
-            btn.marginTop = "5px";
+            btn.paddingTop = "5px"; 
             btn.hoverCursor = "pointer";
             btn.onPointerUpObservable.add(onClick);
             panel.addControl(btn);
