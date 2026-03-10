@@ -1,5 +1,6 @@
 class Playground {
-    public static CreateScene(engine: BABYLON.Engine, canvas: HTMLCanvasElement): BABYLON.Scene {
+    public static async CreateScene(engine: BABYLON.Engine, canvas: HTMLCanvasElement): Promise<BABYLON.Scene> {
+        // Create a new scene
         const scene = new BABYLON.Scene(engine);
 
         //Create the the default camera in the scene.
@@ -20,119 +21,168 @@ class Playground {
         camera.wheelDeltaPercentage = 0.005;
         // Limit panning speed for both of mouse and touch devices
         camera.panningSensibility = 5000; // Panning speed setting, smaller means faster panning
-        // Create cylinder
-        const cylinder = BABYLON.MeshBuilder.CreateCylinder(
-            "cylinder",
-            { height: 2, diameter: 1.5 },
-            scene
-        );
 
-        // Dynamic texture
-        const textureSize = 1024;
-        const dynamicTexture = new BABYLON.DynamicTexture(
-            "dynamicTexture",
-            { width: textureSize, height: textureSize },
-            scene,
-            true
-        );
+        // Define the URL for the GLB model
+        const modelUrl = "https://raw.githubusercontent.com/robin-artemstein/testing-static-pages/main/bullet-for-assult-2025-11-7-1.glb";
 
-        const ctx = dynamicTexture.getContext();
+        // Load the GLB model asynchronously
+        const importResult = await BABYLON.SceneLoader.ImportMeshAsync("", modelUrl, "", scene);
 
-        // Transparent background
-        ctx.clearRect(0, 0, textureSize, textureSize);
+        // Get the loaded meshes
+        const meshes = importResult.meshes;
 
-        // Image
-        const image = new Image();
-        image.crossOrigin = "anonymous";
-        image.src = "https://i.imgur.com/ZyY3rbN.png";
+        // Create a dynamic texture with size 1024x1024 (power of 2 for better performance)
+        const dynamicTexture = new BABYLON.DynamicTexture("dynamicTexture", 1024, scene, true);
+        const textureSize = 1024; // Size of the texture (width and height)
 
-        let posX = textureSize / 2;
-        let posY = textureSize / 2;
+        // Get the 2D context to draw on the texture
+        const context = dynamicTexture.getContext();
+
+        // Define the URL for the external image
+        const imageUrl = "https://i.imgur.com/ZyY3rbN.png";
+
+        // Variables to track the image position and scale
+        let posX = 0;
+        let posY = 0;
         let scale = 1;
+        let imgWidth = 0;
+        let imgHeight = 0;
 
-        const draw = () => {
-            ctx.clearRect(0, 0, textureSize, textureSize);
-
-            const w = image.width * scale;
-            const h = image.height * scale;
-
-            ctx.drawImage(
-                image,
-                posX - w / 2,
-                posY - h / 2,
-                w,
-                h
-            );
-
+        // Function to redraw the image on the canvas
+        const redraw = () => {
+            // Clear the canvas to make background transparent
+            context.clearRect(0, 0, textureSize, textureSize);
+        
+            // Draw the image at the current position and scale
+            context.drawImage(img, posX, posY, imgWidth * scale, imgHeight * scale);
+        
+            // Update the dynamic texture in the scene
             dynamicTexture.update();
         };
 
-        image.onload = () => {
-            draw();
-        };
+        // Load the image asynchronously
+        const img = new Image();
+        img.crossOrigin = "anonymous"; // Allow cross-origin loading if needed
+        img.src = imageUrl;
+        await new Promise<void>((resolve) => {
+            img.onload = () => {
+                // Get the natural dimensions of the image
+                imgWidth = img.width;
+                imgHeight = img.height;
+            
+                // Center the image initially
+                posX = (textureSize - imgWidth * scale) / 2;
+                posY = (textureSize - imgHeight * scale) / 2;
+            
+                // Draw the initial image
+                redraw();
+                resolve();
+            };
+        });
 
-        // PBR material
-        const pbr = new BABYLON.PBRMaterial("pbr", scene);
-        pbr.albedoColor = new BABYLON.Color3(1, 1, 1);
-        pbr.metallic = 1.0;
-        pbr.roughness = 0.1;
-        pbr.albedoTexture = dynamicTexture;
+        // Create a new PBR material with the specified properties
+        const pbrMaterial = new BABYLON.PBRMaterial("pbrMaterial", scene);
+        pbrMaterial.albedoColor = new BABYLON.Color3(1, 1, 1); // Base color white
+        pbrMaterial.metallic = 1.0; // Fully metallic
+        pbrMaterial.roughness = 0.1; // Low roughness for smoothness
+        pbrMaterial.albedoTexture = dynamicTexture; // Attach the dynamic texture
+        pbrMaterial.useAlphaFromAlbedoTexture = true; // Use alpha from texture for transparency
+        pbrMaterial.transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND; // Enable alpha blending
 
-        cylinder.material = pbr;
+        // Apply the new material to all loaded meshes (override any existing materials)
+        meshes.forEach((mesh) => {
+            if (mesh.material) {
+                mesh.material = pbrMaterial;
+            }
+        });
 
-        // GUI
-        const ui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ui");
+        // Create a fullscreen GUI
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true);
 
+        // Create a stack panel to hold the controls
         const panel = new BABYLON.GUI.StackPanel();
         panel.width = "220px";
+        panel.height = "200px";
         panel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-        panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-        ui.addControl(panel);
+        panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+        advancedTexture.addControl(panel);
 
-        function makeButton(text: string, callback: () => void) {
-            const btn = BABYLON.GUI.Button.CreateSimpleButton(text, text);
-            btn.height = "40px";
-            btn.color = "white";
-            btn.background = "black";
-            btn.onPointerClickObservable.add(callback);
-            panel.addControl(btn);
-        }
+        // Create a grid for the direction buttons
+        const grid = new BABYLON.GUI.Grid();
+        grid.width = "150px";
+        grid.height = "120px";
+        grid.addColumnDefinition(1 / 3);
+        grid.addColumnDefinition(1 / 3);
+        grid.addColumnDefinition(1 / 3);
+        grid.addRowDefinition(1 / 3);
+        grid.addRowDefinition(1 / 3);
+        grid.addRowDefinition(1 / 3);
+        panel.addControl(grid);
 
-        makeButton("Left", () => {
-            posX -= 10;
-            draw();
-        });
-
-        makeButton("Right", () => {
-            posX += 10;
-            draw();
-        });
-
-        makeButton("Up", () => {
+        // Up button
+        const upButton = BABYLON.GUI.Button.CreateSimpleButton("up", "Up");
+        upButton.width = 1;
+        upButton.height = 1;
+        upButton.color = "white";
+        upButton.background = "blue";
+        upButton.onPointerUpObservable.add(() => {
             posY -= 10;
-            draw();
+            redraw();
         });
+        grid.addControl(upButton, 0, 1); // Row 0, Column 1
 
-        makeButton("Down", () => {
+        // Left button
+        const leftButton = BABYLON.GUI.Button.CreateSimpleButton("left", "Left");
+        leftButton.width = 1;
+        leftButton.height = 1;
+        leftButton.color = "white";
+        leftButton.background = "blue";
+        leftButton.onPointerUpObservable.add(() => {
+            posX -= 10;
+            redraw();
+        });
+        grid.addControl(leftButton, 1, 0); // Row 1, Column 0
+
+        // Down button
+        const downButton = BABYLON.GUI.Button.CreateSimpleButton("down", "Down");
+        downButton.width = 1;
+        downButton.height = 1;
+        downButton.color = "white";
+        downButton.background = "blue";
+        downButton.onPointerUpObservable.add(() => {
             posY += 10;
-            draw();
+            redraw();
         });
+        grid.addControl(downButton, 2, 1); // Row 2, Column 1
 
-        // Slider for resizing image
+        // Right button
+        const rightButton = BABYLON.GUI.Button.CreateSimpleButton("right", "Right");
+        rightButton.width = 1;
+        rightButton.height = 1;
+        rightButton.color = "white";
+        rightButton.background = "blue";
+        rightButton.onPointerUpObservable.add(() => {
+            posX += 10;
+            redraw();
+        });
+        grid.addControl(rightButton, 1, 2); // Row 1, Column 2
+
+        // Create a slider for resizing the image
         const slider = new BABYLON.GUI.Slider();
         slider.minimum = 0.1;
         slider.maximum = 2;
         slider.value = 1;
+        slider.step = 0.1;
         slider.height = "20px";
         slider.width = "200px";
-
-        slider.onValueChangedObservable.add((v) => {
-            scale = v;
-            draw();
+        slider.onValueChangedObservable.add((value) => {
+            scale = value;
+            // Recenter if needed, but for simplicity, just redraw at current position
+            redraw();
         });
-
         panel.addControl(slider);
 
+        // Return the scene
         return scene;
     }
 }
