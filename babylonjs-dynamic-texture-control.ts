@@ -1,14 +1,30 @@
 class Playground {
     public static async CreateScene(engine: BABYLON.Engine, canvas: HTMLCanvasElement): Promise<BABYLON.Scene> {
-        // Create the scene, camera, light, and enviroment
+        // Create Scene and camera
         const scene = new BABYLON.Scene(engine);
-        const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 5, BABYLON.Vector3.Zero(), scene);
-        camera.attachControl(canvas, true);
-        const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-        const env = scene.createDefaultEnvironment();
+        scene.clearColor = new BABYLON.Color4(0, 0, 0, 1);
+        scene.createDefaultCameraOrLight(true, true, true);
+        scene.createDefaultEnvironment();
+        const camera = scene.activeCamera as BABYLON.ArcRotateCamera;
+        // Arc rotate camera setting
+        camera.alpha = -Math.PI / 2;
+        camera.beta =  Math.PI / 1;
+        camera.radius = 1.5;
+        // Limit zooming speed for touch devices
+        camera.pinchPrecision = 0.005;
+        camera.pinchDeltaPercentage = 0.005;
+        // Limit Zooming speed for mouse
+        camera.wheelPrecision = 0.005;
+        camera.wheelDeltaPercentage = 0.005;
+        // Limit panning speed for both of mouse and touch devices
+        camera.panningSensibility = 5000; // Panning speed setting, smaller means faster panning
+        // Create a ground plane defualt model
 
-        // 1. Create a cyilnder default model
-        const cylinder = BABYLON.MeshBuilder.CreateCylinder("cylinder", { height: 2, diameter: 2 }, scene);
+        // Create a ground plane defualt model
+	    const groundWidth = 1;
+        const groundHeight = 1;
+        const ground = BABYLON.MeshBuilder.CreateGround("ground1", {width: groundWidth, height: groundHeight}, scene)
+        ground.rotation.x = -Math.PI / 2;
 
         // 2. PBR material matting
         const pbr = new BABYLON.PBRMaterial("pbr", scene);
@@ -16,17 +32,17 @@ class Playground {
         pbr.metallic = 1.0;
         pbr.roughness = 0.1;
         pbr.useAlphaFromAlbedoTexture = true; // Ensure the transparency of the dynamic texture is applied
-        cylinder.material = pbr;
+        ground.material = pbr;
 
         // 3. Create the dynamic texture
-        const texSize = 1024;
+        const texSize = 512;
         const dynamicTexture = new BABYLON.DynamicTexture("dynamic texture", texSize, scene, true);
         pbr.albedoTexture = dynamicTexture;
 
         // External image status
-        let imgX = 0;
-        let imgY = 0;
-        let imgScale = 0.5; // 預設縮放比例
+        let imgX = 3;
+        let imgY = 5;
+        let imgScale = 1; // 預設縮放比例
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.src = "https://i.imgur.com/ZyY3rbN.png";
