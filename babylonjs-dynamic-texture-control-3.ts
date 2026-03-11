@@ -24,24 +24,29 @@ class Playground {
 	    const groundWidth = 1;
         const groundHeight = 1;
         const ground = BABYLON.MeshBuilder.CreateGround("ground1", {width: groundWidth, height: groundHeight}, scene)
-        ground.rotation.x = -Math.PI / 2; 
+        ground.rotation.x = -Math.PI / 1.25; 
+        
+        // Create standard material for the model
+    	const materialGround = new BABYLON.PBRMaterial("pbrMat", scene); 				
+	    ground.material = materialGround;
+        
         // Create dynamic texture canvas
         const textureResolution = 512;
 	    const textureGround = new BABYLON.DynamicTexture("dynamic texture", textureResolution, scene);   
         // Uncomment this line of code if you want the transparent (alpha) background
         //textureGround.hasAlpha = true;
+        materialGround.albedoTexture = textureGround;
+        materialGround.albedoColor = new BABYLON.Color3(1, 1, 1);
+        materialGround.metallic = 1.0;
+        materialGround.roughness = 0.1
 	    const textureContext = textureGround.getContext();
-        
-        // Create standard material for the model
-    	const materialGround = new BABYLON.StandardMaterial("Mat", scene);    				
-	    materialGround.diffuseTexture = textureGround;
-	    ground.material = materialGround;
+
         // Load image
-	    const img = new Image();
         const imgPosX = 3;
         const imgPosY = 5;
         const imgWidth = 100;
         const imgHeight = 100;
+	    const img = new Image();
 	    img.src = 'https://i.imgur.com/1eAmEO8.png';
         img.crossOrigin = "Anonymous";
 	    img.onload = function() {
