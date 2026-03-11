@@ -13,8 +13,8 @@ class Playground {
         camera.beta =  Math.PI / 1;
         
         // Create a ground plane defualt model
-	    const groundWidth = 1;
-        const groundHeight = 1;
+	    const groundWidth:number = 1;
+        const groundHeight:number = 1;
         const ground = BABYLON.MeshBuilder.CreateGround("ground1", {width: groundWidth, height: groundHeight}, scene)
         ground.rotation.x = -Math.PI / 1.25; 
         
@@ -35,10 +35,10 @@ class Playground {
         materialGround.useAlphaFromAlbedoTexture = true;
 	    const textureContext = textureGround.getContext();
         // Load image
-        const imgPosX = 3;
-        const imgPosY = 5;
-        const imgWidth = 100;
-        const imgHeight = 100;
+        const imgPosX:number = 3;
+        const imgPosY:number = 5;
+        const imgWidth:number = 100;
+        const imgHeight:number = 100;
 	    const img = new Image();
 	    img.src = 'https://i.imgur.com/1eAmEO8.png';
         img.crossOrigin = "Anonymous";
