@@ -2,7 +2,9 @@ class Playground {
     public static CreateScene(engine: BABYLON.Engine, canvas: HTMLCanvasElement): BABYLON.Scene {
         // Create Scene and camera
         const scene = new BABYLON.Scene(engine);
-        scene.clearColor = new BABYLON.Color4(0.7, 0.5, 0.5);
+        scene.clearColor = new BABYLON.Color4(0.7, 0.5, 0.5, 0.99);
+        const hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("https://playground.babylonjs.com/textures/environment.env", scene);
+        scene.environmentTexture = hdrTexture;
         scene.createDefaultCameraOrLight(true, true, true);
         scene.createDefaultEnvironment();
         const camera = scene.activeCamera as BABYLON.ArcRotateCamera;
@@ -26,7 +28,7 @@ class Playground {
         // Uncomment this line of code if you want the transparent (alpha) background
         //textureGround.hasAlpha = true;
         materialGround.albedoTexture = textureGround;
-        materialGround.albedoColor = new BABYLON.Color3(1, 1, 1);
+        materialGround.albedoColor = new BABYLON.Color3(1.0, 0.766, 0.336);
         materialGround.metallic = 1.0;
         materialGround.roughness = 0.1
         materialGround.transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND;
