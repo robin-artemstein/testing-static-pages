@@ -96,7 +96,7 @@ class Playground {
         });
         editPanel.addControl(btnDel);
 
-    // Functionality logics
+        // Functionality logics
 
         // Function for deselected box
         function deselectAll() {
@@ -152,7 +152,6 @@ class Playground {
         };
 
         // Button GUI to add an orange wireframe box
-
         btnAdd.onPointerUpObservable.add(() => {
             const box = BABYLON.MeshBuilder.CreateBox("projectorBox", { size: 1 }, scene);
             box.position = new BABYLON.Vector3(Math.random() * 4 - 2, 0.5, Math.random() * 4 - 2);
