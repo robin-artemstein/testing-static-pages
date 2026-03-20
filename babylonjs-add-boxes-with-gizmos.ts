@@ -57,6 +57,7 @@ class Playground {
         btnAdd.color = "white";
         btnAdd.background = "orange";
         btnAdd.paddingTop = "10px";
+        btnAdd.hoverCursor = "pointer";
         mainMenu.addControl(btnAdd);
 
         // Slider GUI and delet button GUI when the box is selected
@@ -74,6 +75,7 @@ class Playground {
         slider.height = "20px";
         slider.width = "150px";
         slider.color = "orange";
+        slider.hoverCursor = "pointer";
         slider.onValueChangedObservable.add((value) => {
             if (selectedMesh) {
                 selectedMesh.scaling.setAll(value);
@@ -88,6 +90,7 @@ class Playground {
         btnDel.color = "white";
         btnDel.background = "red";
         btnDel.paddingTop = "10px";
+        btnDel.hoverCursor = "pointer";
         btnDel.onPointerUpObservable.add(() => {
             if (selectedMesh) {
                 selectedMesh.dispose();
@@ -96,7 +99,7 @@ class Playground {
         });
         editPanel.addControl(btnDel);
 
-        // Functionality logics
+    // Functionality logics
 
         // Function for deselected box
         function deselectAll() {
@@ -152,6 +155,7 @@ class Playground {
         };
 
         // Button GUI to add an orange wireframe box
+
         btnAdd.onPointerUpObservable.add(() => {
             const box = BABYLON.MeshBuilder.CreateBox("projectorBox", { size: 1 }, scene);
             box.position = new BABYLON.Vector3(Math.random() * 4 - 2, 0.5, Math.random() * 4 - 2);
